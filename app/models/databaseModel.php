@@ -16,9 +16,12 @@ class DatabaseModel {
 
         try {
             $this->db = new PDO("mysql:host=$dbHost;dbname=$dbDatabase", $dbUsername, $dbPassword);
-            echo "connexion réussie";
         } catch (PDOException $e) {
             throw new Exception("Erreur de connexion à la base de données : " . $e->getMessage());
         }
+    }
+
+    public function getDatabaseConnection() {
+        return $this->db;
     }
 }

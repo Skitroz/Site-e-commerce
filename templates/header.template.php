@@ -45,7 +45,7 @@ class HeaderTemplate
         $headerContent .= "<li><a href='#'>CONTACT</a></li>";
         $headerContent .= "<li><a href='#' class='flex gap-1 items-center'><i class='fa-solid fa-fire'></i><span>PROMOS</span></a></li>";
         $headerContent .= "</ul>";
-        $headerContent .= "<form action='rechercher.php' method='GET' class='py-2 px-4 border-[2px] border-black mb-0 flex gap-2 items-center rounded'>";
+        $headerContent .= "<form action='' method='GET' class='py-2 px-4 border-[2px] border-black mb-0 flex gap-2 items-center rounded'>";
         $headerContent .= "<input type='text' name='searchBar' placeholder='Rechercher des produits...' class='focus:outline-none'>";
         $headerContent .= "<button type='submit' name='btnSearchBar'><i class='fa-solid fa-magnifying-glass'></i></button>";
         $headerContent .= "</form>";
