@@ -20,13 +20,13 @@ class HeaderTemplate
         $headerContent .= "<div class='py-4 border-b'>";
         $headerContent .= "<div class='flex justify-between mx-24 items-center'>";
         $headerContent .= "<ul class='flex items-center gap-16'>";
-        $headerContent .= "<li><a href='#' class='font-bold text-2xl flex gap-2 items-center'><i class='fa-solid fa-cloud'></i>Commerce</a></li>";
+        $headerContent .= "<li><a href='/Site-e-commerce' class='font-bold text-2xl flex gap-2 items-center'><i class='fa-solid fa-cloud'></i>Commerce</a></li>";
         $headerContent .= "<li><p class='font-semi-bold'>Contactez-nous</p><a href='mailto:contact@cloudcommerce.com' class='font-medium underline text-black'>contact@cloudcommerce.com</a></li>";
         $headerContent .= "</ul>";
-        $headerContent .= "<ul class='flex gap-4 text-xl'>";
+        $headerContent .= "<ul class='flex gap-4 text-xl items-center'>";
         $headerContent .= "<li><a href='#'><i class='fa-regular fa-user'></i></a></li>";
         $headerContent .= "<li><a href='#'><i class='fa-regular fa-heart'></i></a></li>";
-        $headerContent .= "<li><a href='#'><i class='fa-regular fa-envelope-open'></i></a></li>";
+        $headerContent .= "<li><a href='#'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-shopping-cart'><circle cx='8' cy='21' r='1'/><circle cx='19' cy='21' r='1'/><path d='M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12'/></svg></a></li>";
         $headerContent .= "</ul>";
         $headerContent .= "</div>";
         $headerContent .= "</div>";
@@ -64,5 +64,4 @@ class HeaderTemplate
         echo $headerContent;
     }
 }
-
-
+?>
