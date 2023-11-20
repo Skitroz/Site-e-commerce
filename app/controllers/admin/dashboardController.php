@@ -1,7 +1,7 @@
 <?php
 
-class DashboardController {
-
+class DashboardController
+{
     public function showDashboard()
     {
         $this->checkAuthentication();
@@ -12,7 +12,7 @@ class DashboardController {
 
         echo "<div class='mx-auto max-w-screen-lg'>";
         echo "<div class='grid grid-cols-2 gap-4'>";
-        
+
         echo "<div class='bg-white p-6 rounded shadow-md'>";
         echo "<h2 class='text-xl font-bold mb-4'>Statistiques</h2>";
 
@@ -24,33 +24,74 @@ class DashboardController {
 
         echo "</div>";
 
+        // Bloc Gérer les Articles
+        echo "<div class='bg-white p-6 rounded shadow-md'>";
+        echo "<h2 class='text-xl font-bold mb-4'>Gérer les Articles</h2>";
+
+        $this->showArticleTable();
+
+        echo "</div>"; // Fermeture du bloc Gérer les Articles
+
+        // Bloc Créer un Article
+        echo "<div class='bg-white p-6 rounded shadow-md'>";
+        echo "<h2 class='text-xl font-bold mb-4'>Créer un Article</h2>";
+
+        // Afficher le message de succès ou d'erreur ici, avant le formulaire
+        $this->createArticle();
+
+        // Formulaire pour créer un nouvel article
+        echo "<form method='POST' action='' class='max-w-sm'>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleName' class='block text-sm font-medium text-gray-700'>Nom de l'article</label>";
+        echo "<input type='text' name='articleName' id='articleName' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleDescription' class='block text-sm font-medium text-gray-700'>Description de l'article</label>";
+        echo "<textarea name='articleDescription' id='articleDescription' class='mt-1 p-2 w-full border rounded-md' required></textarea>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleCategory' class='block text-sm font-medium text-gray-700'>Catégorie</label>";
+        echo "<input type='text' name='articleCategory' id='articleCategory' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articlePrice' class='block text-sm font-medium text-gray-700'>Prix</label>";
+        echo "<input type='text' name='articlePrice' id='articlePrice' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleImageURL' class='block text-sm font-medium text-gray-700'>URL de l'image ('exemple : https://i.imgur.com/phfcGEY.jpg')</label>";
+        echo "<input type='text' name='articleImageURL' id='articleImageURL' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<button type='submit' name='createArticle' class='bg-blue-500 text-white py-2 px-4 rounded-md'>Créer l'article</button>";
+        echo "</div>";
+        echo "</form>";
+
+        echo "</div>"; // Fermeture du bloc Créer un Article
+
+        // Bloc Derniers Articles
         echo "<div class='bg-white p-6 rounded shadow-md'>";
         echo "<h2 class='text-xl font-bold mb-4'>Derniers Articles</h2>";
 
         $latestArticles = $this->getLatestArticles();
-        
+
         if (count($latestArticles) > 0) {
             echo "<ul class='list-disc pl-6'>";
             foreach ($latestArticles as $article) {
-                echo "<li>{$article['name']}</li>";
+                echo "<li class='underline'><a href='?action=detailProduct&id={$article['id']}' target='_blank'>{$article['name']}</a></li>";
             }
             echo "</ul>";
         } else {
             echo "<p>Aucun article trouvé.</p>";
         }
 
-        echo "</div>";
+        echo "</div>"; // Fermeture du bloc Derniers Articles
 
-        echo "<div class='bg-white p-6 rounded shadow-md'>";
-        echo "<h2 class='text-xl font-bold mb-4'>Gérer les Articles</h2>";
+        echo "</div>"; // Fermeture de la grille
 
-        $this->showArticleTable();
+        echo "</div>"; // Fermeture du conteneur max-w-screen-lg
 
-        echo "</div>";
+        echo "</div>"; // Fermeture du conteneur mx-auto
 
-        echo "</div>";
-
-        echo "</div>";
     }
 
     private function showArticleTable()
@@ -70,10 +111,16 @@ class DashboardController {
         foreach ($articles as $article) {
             echo "<tr>";
             echo "<td class='px-6 py-4 whitespace-nowrap'>{$article['id']}</td>";
-            echo "<td class='px-6 py-4 whitespace-nowrap'>{$article['name']}</td>";
+            echo "<td class='px-6 py-4 whitespace-nowrap'>";
+
+            // Limiter la longueur du nom à 10 caractères avec des points de suspension
+            $shortenedName = strlen($article['name']) > 10 ? substr($article['name'], 0, 30) . '...' : $article['name'];
+            echo $shortenedName;
+
+            echo "</td>";
             echo "<td class='px-6 py-4 whitespace-nowrap'>";
             echo "<a href='?action=editArticle&id={$article['id']}' class='text-blue-500 mr-2'><i class='fa-regular fa-pen-to-square'></i></a>";
-            echo "<a href='?action=deleteArticle&id={$article['id']}' class='text-red-500'><i class='fa-regular fa-trash-can'></i></a>";
+            echo "<a href='?action=deleteArticle&id={$article['id']}' class='text-red-500 delete-article' data-article-id='{$article['id']}'><i class='fa-regular fa-trash-can'></i></a>";
             echo "</td>";
             echo "</tr>";
         }
@@ -130,22 +177,112 @@ class DashboardController {
             $db = new DatabaseModel();
             $conn = $db->getDatabaseConnection();
 
-            $stmt = $conn->query("SELECT * FROM product ORDER BY id DESC LIMIT 3");
+            $stmt = $conn->query("SELECT * FROM product ORDER BY id");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
             return [];
         }
     }
+
     private function checkAuthentication()
     {
-        session_start();
-
-        if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated']) {
+        if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated'] || !$this->isAdmin()) {
             header("Location: ?action=signIn");
             exit();
         }
     }
-}
 
+    private function isAdmin()
+    {
+        try {
+            $db = new DatabaseModel();
+            $conn = $db->getDatabaseConnection();
+
+            $stmt = $conn->prepare("SELECT isAdmin FROM admin WHERE id = :userId");
+            $stmt->bindParam(':userId', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->execute();
+
+            $isAdmin = $stmt->fetchColumn();
+
+            return $isAdmin == 1; // Vérifie si le statut isAdmin est égal à 1
+        } catch (PDOException $e) {
+            echo "Erreur : " . $e->getMessage();
+            return false;
+        }
+    }
+
+    // Fonction pour traiter la création d'un nouvel article
+    public function createArticle()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['createArticle'])) {
+            $articleName = $_POST['articleName'];
+            $articleDescription = $_POST['articleDescription'];
+            $articleCategory = $_POST['articleCategory'];
+            $articlePrice = $_POST['articlePrice'];
+            $articleImageURL = $_POST['articleImageURL'];
+
+            // Assurez-vous que les champs requis ne sont pas vides
+            if (empty($articleName) || empty($articleDescription) || empty($articleCategory) || empty($articlePrice) || empty($articleImageURL)) {
+                echo "<p class='text-red-500'>Veuillez remplir tous les champs obligatoires.</p>";
+                return;
+            }
+
+            try {
+                // Connectez-vous à votre base de données
+                $db = new DatabaseModel();
+                $conn = $db->getDatabaseConnection();
+
+                // Préparez la requête d'insertion
+                $stmt = $conn->prepare("INSERT INTO product (name, description, category, price, image_url) VALUES (:name, :description, :category, :price, :image_url)");
+                $stmt->bindParam(':name', $articleName, PDO::PARAM_STR);
+                $stmt->bindParam(':description', $articleDescription, PDO::PARAM_STR);
+                $stmt->bindParam(':category', $articleCategory, PDO::PARAM_STR);
+                $stmt->bindParam(':price', $articlePrice, PDO::PARAM_STR);
+                $stmt->bindParam(':image_url', $articleImageURL, PDO::PARAM_STR);
+
+                // Exécutez la requête
+                if ($stmt->execute()) {
+                    // Article créé avec succès
+                    echo "<p class='text-green-500'>L'article a été créé avec succès.</p>";
+                } else {
+                    // Erreur lors de la création de l'article
+                    echo "<p class='text-red-500'>Une erreur s'est produite lors de la création de l'article.</p>";
+                }
+            } catch (PDOException $e) {
+                // Gestion des erreurs de base de données
+                echo "<p class='text-red-500'>Erreur de base de données : " . $e->getMessage() . "</p>";
+            }
+        }
+    }
+    public function deleteArticle()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'deleteArticle' && isset($_GET['id'])) {
+            $articleId = $_GET['id'];
+
+            try {
+                // Connectez-vous à votre base de données
+                $db = new DatabaseModel();
+                $conn = $db->getDatabaseConnection();
+
+                // Préparez la requête de suppression
+                $stmt = $conn->prepare("DELETE FROM product WHERE id = :id");
+                $stmt->bindParam(':id', $articleId, PDO::PARAM_INT);
+
+                // Exécutez la requête
+                if ($stmt->execute()) {
+                    // Article supprimé avec succès
+                    header("Location: ?action=showDashboard");
+                    exit();
+                } else {
+                    // Erreur lors de la suppression de l'article
+                    echo "<p class='text-red-500'>Une erreur s'est produite lors de la suppression de l'article.</p>";
+                }
+            } catch (PDOException $e) {
+                // Gestion des erreurs de base de données
+                echo "<p class='text-red-500'>Erreur de base de données : " . $e->getMessage() . "</p>";
+            }
+        }
+    }
+}
 ?>

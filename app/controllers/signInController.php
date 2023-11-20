@@ -1,9 +1,9 @@
 <?php
-
 class SignInController {
-    
+
     public function showSignInForm()
     {
+        ob_start();
         $form = "
         <div class='mx-auto max-w-md mt-8'>
             <h2 class='text-3xl font-bold mb-4 text-center'>Connexion</h2>
@@ -22,11 +22,13 @@ class SignInController {
             </form>
         </div>
         ";
-
         echo $form;
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'signIn') {
             $this->signInUser();
         }
+
+        ob_end_flush();
     }
 
     private function signInUser()
@@ -44,9 +46,10 @@ class SignInController {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['password'])) {
-                ob_start();
-                header("Location: ?action=admin/dashboard");
-                ob_end_flush();
+                session_start();
+                $_SESSION['authenticated'] = true;
+                $_SESSION['user_id'] = $user['id'];
+                header("Location: ./");
                 exit();
             } else {
                 echo "<p class='text-center text-red-600 font-bold'>Nom d'utilisateur ou mot de passe incorrect.</p>";
@@ -56,5 +59,4 @@ class SignInController {
         }
     }
 }
-
 ?>

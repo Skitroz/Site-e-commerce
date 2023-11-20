@@ -45,16 +45,14 @@ class SearchResults
                 echo "<ul class='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>";
                 foreach ($results as $result) {
                     echo "<li class='bg-gray-800 p-6 rounded shadow-md text-white'>";
-                    echo "<img src='" . $result['image_url'] . "' alt='" . $result['name'] . "' class='mb-4 w-full h-40 object-cover'>";
+                    echo "<a href='?action=detailProduct&id={$result['id']}'><img src='" . $result['image_url'] . "' alt='" . $result['name'] . "' class='mb-4 w-full h-40 object-cover'>";
                     echo "<h3 class='text-lg font-semibold mb-2'>" . $result['name'] . "</h3>";
-                    echo "<p class='text-gray-400 mb-2'>" . $result['description'] . "</p>";
                     echo "<p class='text-blue-700 font-bold'>" . $result['category'] . "</p>";
                     echo "<p class='text-white font-bold'>" . $result['price'] . " €</p>";
                     echo "</li>";
                 }
                 echo "</ul>";
             }
-
             echo "</div>";
         }
     }

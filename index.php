@@ -13,6 +13,8 @@ require 'app/controllers/searchResultsController.php';
 require 'app/controllers/signUpController.php';
 require 'app/controllers/signInController.php';
 require 'app/controllers/admin/dashboardController.php';
+require 'app/models/modelProductPage.php'; 
+require 'app/controllers/signOutController.php';
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -35,9 +37,17 @@ if (isset($_GET['action'])) {
             $dashboardController = new DashboardController();
             $dashboardController->showDashboard();
             break;
+        case 'detailProduct':
+            $modelPageController = new ModelPage(); // Utilisez le même nom ici
+            $modelPageController->showModel($_GET['id']);
+            break;
         default:
             $controller = new NotFoundController();
             $controller->notFound();
+            break;
+        case 'signOut': // Nouveau cas pour la déconnexion
+            $signOutController = new SignOutController();
+            $signOutController->signOut();
             break;
     }
 } else {

@@ -6,7 +6,7 @@ class DatabaseModel {
     public function __construct() {
         require 'vendor/autoload.php';
 
-        $dotenv = Dotenv\Dotenv::createImmutable('C:\xampp-nws\htdocs\Site-e-commerce');
+        $dotenv = Dotenv\Dotenv::createImmutable('C:\XAMPP NWS\htdocs\Site-e-commerce');
         $dotenv->load();
 
         $dbHost = $_ENV['DB_HOST'];

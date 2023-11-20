@@ -1,89 +1,27 @@
 <?php
-
 class TopSellingModel {
     public function topSelling() {
-        $topSelling = "<section class='flex flex-col mx-auto items-center justify-center mt-10'>";
-        $topSelling .= "<h2 class='text-2xl font-bold mb-4 flex-justify-between items-center'>Meilleures Ventes <span><a href='#'>Voir tout</a></span></h2>";
-        // Bloc 1
-        $topSelling .= "<div class='flex'>";
-        $topSelling .= "<div class='relative m-2'>";
-        $topSelling .= "<div class='relative'>";
-        $topSelling .= "<img src='./app/img/manettePS5.webp' alt='Image 2' />";
-        $topSelling .= "<div class='absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-xl text-center pt-[350px] bg-gray-800 opacity-30'>";
-        $topSelling .= "<div>";
-        $topSelling .= "<p class='font-bold text-3xl'>Manette sans fil</br>DualSense Edge™</p>";
-        $topSelling .= "<p class='mt-4 font-bold'>239,99 €</p>";
-        $topSelling .= "<div class='mt-6 border-b-2 w-[208px] mx-auto transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110 duration-300'>";
-        $topSelling .= "<a href='#' class='flex items-center gap-2 font-bold text-center'>Achetez maintenant <i class='fa-solid fa-chevron-right text-lg mt-1'></i></a>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
+        $db = new DatabaseModel();
+        $conn = $db->getDatabaseConnection();
+        $stmt = $conn->query("SELECT * FROM product LIMIT 2");
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Bloc 2
-        $topSelling .= "<div class='relative m-2'>";
-        $topSelling .= "<div class='relative'>";
-        $topSelling .= "<img src='./app/img/manettePS5.webp' alt='Image 2' />";
-        $topSelling .= "<div class='absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-xl text-center pt-[350px] bg-gray-800 opacity-30'>";
-        $topSelling .= "<div>";
-        $topSelling .= "<p class='font-bold text-3xl'>Manette sans fil</br>DualSense Edge™</p>";
-        $topSelling .= "<p class='mt-4 font-bold'>239,99 €</p>";
-        $topSelling .= "<div class='mt-6 border-b-2 w-[208px] mx-auto transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110 duration-300'>";
-        $topSelling .= "<a href='#' class='flex items-center gap-2 font-bold text-center'>Achetez maintenant <i class='fa-solid fa-chevron-right text-lg mt-1'></i></a>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
+        echo "<section class='flex flex-col mx-auto items-center justify-center mt-10'>";
+        echo "<h2 class='text-2xl font-bold mb-4 flex-justify-between items-center'>Meilleures Ventes</h2>";
 
-        $topSelling .= "<div class='relative m-2'>";
-        $topSelling .= "<div class='relative'>";
-        $topSelling .= "<img src='./app/img/manettePS5.webp' alt='Image 2' />";
-        $topSelling .= "<div class='absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-xl text-center pt-[350px] bg-gray-800 opacity-30'>";
-        $topSelling .= "<div>";
-        $topSelling .= "<p class='font-bold text-3xl'>Manette sans fil</br>DualSense Edge™</p>";
-        $topSelling .= "<p class='mt-4 font-bold'>239,99 €</p>";
-        $topSelling .= "<div class='mt-6 border-b-2 w-[208px] mx-auto transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110 duration-300'>";
-        $topSelling .= "<a href='#' class='flex items-center gap-2 font-bold text-center'>Achetez maintenant <i class='fa-solid fa-chevron-right text-lg mt-1'></i></a>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-
-        $topSelling .= "<div class='relative m-2'>";
-        $topSelling .= "<div class='relative'>";
-        $topSelling .= "<img src='./app/img/manettePS5.webp' alt='Image 2' />";
-        $topSelling .= "<div class='absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-xl text-center pt-[350px] bg-gray-800 opacity-30'>";
-        $topSelling .= "<div>";
-        $topSelling .= "<p class='font-bold text-3xl'>Manette sans fil</br>DualSense Edge™</p>";
-        $topSelling .= "<p class='mt-4 font-bold'>239,99 €</p>";
-        $topSelling .= "<div class='mt-6 border-b-2 w-[208px] mx-auto transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110 duration-300'>";
-        $topSelling .= "<a href='#' class='flex items-center gap-2 font-bold text-center'>Achetez maintenant <i class='fa-solid fa-chevron-right text-lg mt-1'></i></a>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-
-        $topSelling .= "<div class='relative m-2'>";
-        $topSelling .= "<div class='relative'>";
-        $topSelling .= "<img src='./app/img/manettePS5.webp' alt='Image 2' />";
-        $topSelling .= "<div class='absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-xl text-center pt-[350px] bg-gray-800 opacity-30'>";
-        $topSelling .= "<div>";
-        $topSelling .= "<p class='font-bold text-3xl'>Manette sans fil</br>DualSense Edge™</p>";
-        $topSelling .= "<p class='mt-4 font-bold'>239,99 €</p>";
-        $topSelling .= "<div class='mt-6 border-b-2 w-[208px] mx-auto transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110 duration-300'>";
-        $topSelling .= "<a href='#' class='flex items-center gap-2 font-bold text-center'>Achetez maintenant <i class='fa-solid fa-chevron-right text-lg mt-1'></i></a>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .= "</div>";
-        $topSelling .=  "</div>";
-        $topSelling .= "</section>";
-
-        echo $topSelling;
+        echo "<div class='grid grid-cols-2 gap-4'>";
+        
+        foreach ($products as $result) {
+            echo "<li class='bg-gray-800 p-6 rounded shadow-md text-white'>";
+            echo "<a href='?action=detailProduct&id={$result['id']}'><img src='" . $result['image_url'] . "' alt='" . $result['name'] . "' class='mb-4 w-full h-80 object-cover'></a>";
+            echo "<h3 class='text-lg font-semibold mb-2'>" . $result['name'] . "</h3>";
+            echo "<p class='text-blue-700 font-bold'>" . $result['category'] . "</p>";
+            echo "<p class='text-white font-bold'>" . $result['price'] . " €</p>";
+            echo "</li>";
+        }
+        echo "</div>";
+        echo "</section>";
     }
 }
+
+?>

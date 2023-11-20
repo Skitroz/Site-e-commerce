@@ -4,6 +4,7 @@ class SignUpController
 {
     public function showSignUpForm()
     {
+        ob_start();
         $form = "
         <div class='mx-auto max-w-md mt-8'>
             <h2 class='text-3xl font-bold mb-4 text-center'>Inscription</h2>
@@ -40,6 +41,7 @@ class SignUpController
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'signUp') {
             $this->registerUser();
         }
+        ob_end_flush();
     }
 
     private function registerUser()
