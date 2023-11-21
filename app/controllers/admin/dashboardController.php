@@ -62,6 +62,13 @@ class DashboardController
         echo "<input type='text' name='articleImageURL' id='articleImageURL' class='mt-1 p-2 w-full border rounded-md' required>";
         echo "</div>";
         echo "<div class='mb-4'>";
+        echo "<label for='isShowcasing' class='block text-sm font-medium text-gray-700'>Mettre en avant</label>";
+        echo "<select name='isShowcasing' id='isShowcasing' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "<option value='non'>Non</option>";
+        echo "<option value='oui'>Oui</option>";
+        echo "</select>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
         echo "<button type='submit' name='createArticle' class='bg-blue-500 text-white py-2 px-4 rounded-md'>Créer l'article</button>";
         echo "</div>";
         echo "</form>";
@@ -92,6 +99,42 @@ class DashboardController
 
         echo "</div>"; // Fermeture du conteneur mx-auto
 
+    }
+
+    public function showEditForm($article) {
+        echo "<div class='flex justify-center items-center min-h-screen'>";
+        echo "<form method='POST' action='?action=updateArticle&id=" . $article['id'] . "' class='max-w-sm w-full'>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleName' class='block text-sm font-medium text-gray-700'>Nom de l'article</label>";
+        echo "<input type='text' name='articleName' id='articleName' value='" . htmlspecialchars($article['name']) . "' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleDescription' class='block text-sm font-medium text-gray-700'>Description de l'article</label>";
+        echo "<textarea name='articleDescription' id='articleDescription' class='mt-1 p-2 w-full border rounded-md' required>" . htmlspecialchars($article['description']) . "</textarea>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleCategory' class='block text-sm font-medium text-gray-700'>Catégorie</label>";
+        echo "<input type='text' name='articleCategory' id='articleCategory' value='" . htmlspecialchars($article['category']) . "' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articlePrice' class='block text-sm font-medium text-gray-700'>Prix</label>";
+        echo "<input type='number' step='0.01' name='articlePrice' id='articlePrice' value='" . htmlspecialchars($article['price']) . "' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='articleImageURL' class='block text-sm font-medium text-gray-700'>URL de l'image</label>";
+        echo "<input type='text' name='articleImageURL' id='articleImageURL' value='" . htmlspecialchars($article['image_url']) . "' class='mt-1 p-2 w-full border rounded-md' required>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<label for='isShowcasing' class='block text-sm font-medium text-gray-700'>Mettre en avant</label>";
+        echo "<select name='isShowcasing' id='isShowcasing' class='mt-1 p-2 w-full border rounded-md'>";
+        echo "<option value='non' " . ($article['isShowcasing'] == 'non' ? 'selected' : '') . ">Non</option>";
+        echo "<option value='oui' " . ($article['isShowcasing'] == 'oui' ? 'selected' : '') . ">Oui</option>";
+        echo "</select>";
+        echo "</div>";
+        echo "<div class='mb-4'>";
+        echo "<button type='submit' name='updateArticle' class='bg-blue-500 text-white py-2 px-4 rounded-md'>Mettre à jour l'article</button>";
+        echo "</form>";
+        echo "</div>";
     }
 
     private function showArticleTable()
@@ -221,12 +264,7 @@ class DashboardController
             $articleCategory = $_POST['articleCategory'];
             $articlePrice = $_POST['articlePrice'];
             $articleImageURL = $_POST['articleImageURL'];
-
-            // Assurez-vous que les champs requis ne sont pas vides
-            if (empty($articleName) || empty($articleDescription) || empty($articleCategory) || empty($articlePrice) || empty($articleImageURL)) {
-                echo "<p class='text-red-500'>Veuillez remplir tous les champs obligatoires.</p>";
-                return;
-            }
+            $isShowcasing = $_POST['isShowcasing'] ?? 'non';
 
             try {
                 // Connectez-vous à votre base de données
@@ -234,12 +272,13 @@ class DashboardController
                 $conn = $db->getDatabaseConnection();
 
                 // Préparez la requête d'insertion
-                $stmt = $conn->prepare("INSERT INTO product (name, description, category, price, image_url) VALUES (:name, :description, :category, :price, :image_url)");
+                $stmt = $conn->prepare("INSERT INTO product (name, description, category, price, image_url, isShowcasing) VALUES (:name, :description, :category, :price, :image_url, :isShowcasing)");
                 $stmt->bindParam(':name', $articleName, PDO::PARAM_STR);
                 $stmt->bindParam(':description', $articleDescription, PDO::PARAM_STR);
                 $stmt->bindParam(':category', $articleCategory, PDO::PARAM_STR);
                 $stmt->bindParam(':price', $articlePrice, PDO::PARAM_STR);
                 $stmt->bindParam(':image_url', $articleImageURL, PDO::PARAM_STR);
+                $stmt->bindParam(':isShowcasing', $isShowcasing, PDO::PARAM_STR);
 
                 // Exécutez la requête
                 if ($stmt->execute()) {
@@ -255,7 +294,7 @@ class DashboardController
             }
         }
     }
-    public function deleteArticle()
+    public function deleteArticle($articleId)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'deleteArticle' && isset($_GET['id'])) {
             $articleId = $_GET['id'];
@@ -272,7 +311,7 @@ class DashboardController
                 // Exécutez la requête
                 if ($stmt->execute()) {
                     // Article supprimé avec succès
-                    header("Location: ?action=showDashboard");
+                    header("Location: ?action=admin/dashboard");
                     exit();
                 } else {
                     // Erreur lors de la suppression de l'article
@@ -282,6 +321,60 @@ class DashboardController
                 // Gestion des erreurs de base de données
                 echo "<p class='text-red-500'>Erreur de base de données : " . $e->getMessage() . "</p>";
             }
+        }
+    }
+
+    public function editArticle($articleId) {
+        // S'assurer que l'utilisateur est authentifié et a les droits d'administration
+        $this->checkAuthentication();
+
+        try {
+            $db = new DatabaseModel();
+            $conn = $db->getDatabaseConnection();
+
+            $stmt = $conn->prepare("SELECT * FROM product WHERE id = :id");
+            $stmt->execute(['id' => $articleId]);
+            $article = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($article) {
+                // Affichage du formulaire avec les données de l'article
+                $this->showEditForm($article);
+            } else {
+                echo "<p class='text-red-500'>Article introuvable.</p>";
+            }
+        } catch (PDOException $e) {
+            echo "<p class='text-red-500'>Erreur de base de données : " . $e->getMessage() . "</p>";
+        }
+    }
+
+    public function updateArticle($articleId, $data) {
+        $this->checkAuthentication();
+
+        try {
+            $db = new DatabaseModel();
+            $conn = $db->getDatabaseConnection();
+
+            $stmt = $conn->prepare("UPDATE product SET name = :name, description = :description, category = :category, price = :price, image_url = :image_url, isShowcasing = :isShowcasing WHERE id = :id");
+
+            // Lier les paramètres et exécuter la requête
+            $stmt->execute([
+                ':name' => $data['articleName'],
+                ':description' => $data['articleDescription'],
+                ':category' => $data['articleCategory'],
+                ':price' => $data['articlePrice'],
+                ':image_url' => $data['articleImageURL'],
+                ':isShowcasing' => $data['isShowcasing'],
+                ':id' => $articleId
+            ]);
+
+            if ($stmt->rowCount()) {
+                header("Location: ?action=admin/dashboard");
+                echo "<p class='text-green-500'>L'article a été mis à jour avec succès.</p>";
+            } else {
+                echo "<p class='text-yellow-500'>Aucune modification n'a été faite.</p>";
+            }
+        } catch (PDOException $e) {
+            echo "<p class='text-red-500'>Erreur de base de données : " . $e->getMessage() . "</p>";
         }
     }
 }
